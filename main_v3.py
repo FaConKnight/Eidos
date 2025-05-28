@@ -2,20 +2,29 @@ from world_v3 import World
 from entities_v3 import AIEntity
 from god_layer_v3 import GodLayer
 from visualization_v3 import Visualization
+from belief_and_economy_v3 import BeliefSystem, EconomySystem
 
 def run_simulation(rounds=100):
     world = World()
     god = GodLayer(world)
-    visual = Visualization(world)
+    viz = Visualization(world)
+    beliefs = BeliefSystem()
+    economy = EconomySystem()
 
     # เพิ่ม AI 5 ตัวพร้อม Core Traits
-    world.add_entity(AIEntity("Seekra", "Seekra"))
-    world.add_entity(AIEntity("Vanta", "Vanta"))
-    world.add_entity(AIEntity("Thesa", "Thesa"))
-    world.add_entity(AIEntity("Myron", "Myron"))
-    world.add_entity(AIEntity("Kael", "Kael"))
+    entities = [
+        AIEntity("Seekra", "Seekra"),
+        AIEntity("Vanta", "Vanta"),
+        AIEntity("Thesa", "Thesa"),
+        AIEntity("Myron", "Myron"),
+        AIEntity("Kael", "Kael")
+    ]
 
-    god.set_speed(1)  # เริ่มที่ x1
+    for ent in entities:
+        world.add_entity(ent)
+        economy.assign_resources(ent)
+
+    god.set_speed(1)
 
     for i in range(rounds):
         god.step(1)
@@ -28,22 +37,26 @@ def run_simulation(rounds=100):
             print(f"  Knowledge: {e['knowledge']}")
             print(f"  Memory: {e['memory']}")
             print(f"  Last Message: {e['last_message']}")
+
+            # ความเชื่อ
+            belief = beliefs.form_belief(e, summary['weather'])
+            print(f"  Belief: {belief}")
+
+            # เศรษฐกิจ
+            resources = economy.get_resources(e)
+            print(f"  Resources: {resources}")
+
         if summary['new_offspring']:
             print(f"🍼 New Offspring: {summary['new_offspring']}")
         evo = summary['evolution']
         print(f"🧬 Generations: {evo['generation_count']}, Population per Gen: {evo['population_history']}")
         print("=" * 50)
 
-        # ตัวอย่างการบันทึก timeline
-        if summary['time'] == 25:
-            god.save_state("milestone_25")
+        if summary['time'] in [25, 50]:
+            god.save_state(f"milestone_{summary['time']}")
 
-        if summary['time'] == 50:
-            god.save_state("milestone_50")
-
-        # แสดงแผนที่ทุก 10 รอบ
         if summary['time'] % 10 == 0:
-            visual.plot_map()
+            viz.plot_map()
 
 if __name__ == "__main__":
     run_simulation()
