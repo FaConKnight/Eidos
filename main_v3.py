@@ -33,13 +33,14 @@ def run_simulation(rounds=100):
         summary = god.world.summary()
         print(f"🕒 Time: {summary['time']}")
         print(f"🌦️ Weather: {summary['weather']}")
-        for e in summary['entities']:
-            print(f"🧠 {e['name']} | Trait: {e['core_trait']}")
-            print(f"  Energy: {e['energy']:.2f}")
-            print(f"  Knowledge: {e['knowledge']}")
-            print(f"  Memory: {e['memory']}")
-            print(f"  Last Message: {e['last_message']}")
-            belief = beliefs.form_belief(e, summary['weather'])
+
+        for e in world.entities:
+            print(f"🧠 {e.name} | Trait: {e.core_trait}")
+            print(f"  Energy: {e.energy:.2f}")
+            print(f"  Knowledge: {e.knowledge}")
+            print(f"  Memory: {e.memory}")
+            print(f"  Last Message: {e.last_message}")
+            belief = beliefs.form_belief(e, world.weather)
             print(f"  Belief: {belief}")
             resources = economy.get_resources(e)
             print(f"  Resources: {resources}")
