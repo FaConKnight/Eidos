@@ -7,7 +7,6 @@ class AIEntity:
         self.energy = 100.0
         self.knowledge = []
         self.memory = []
-        self.last_message = ""
         self.communication = []
 
     def observe(self, environment):

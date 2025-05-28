@@ -10,7 +10,6 @@ class World:
         self.evolution = EvolutionEngine()
         self.entities = []
         self.offspring = []
-        self.weather = self.generate_weather()
 
     def add_entity(self, entity):
         self.entities.append(entity)
