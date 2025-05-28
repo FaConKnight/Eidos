@@ -10,7 +10,6 @@ class World:
         self.evolution = EvolutionEngine()
         self.entities = []
         self.offspring = []
-        self.weather = self.physics.weather
 
     def add_entity(self, entity):
         self.entities.append(entity)
@@ -18,7 +17,6 @@ class World:
     def step(self):
         self.time.tick()
         self.physics.update_weather()
-        self.weather = self.physics.weather
         for entity in self.entities:
             entity.observe(self.physics.weather)
             self.physics.tick(entity)

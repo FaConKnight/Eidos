@@ -8,7 +8,6 @@ class AIEntity:
         self.knowledge = []
         self.memory = []
         self.communication = []
-        self.last_message = ""
 
     def observe(self, environment):
         self.memory.append(f"Observed {environment}")
