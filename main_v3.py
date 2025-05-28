@@ -3,6 +3,7 @@ from entities_v3 import AIEntity
 from god_layer_v3 import GodLayer
 from visualization_v3 import Visualization
 from belief_and_economy_v3 import BeliefSystem, EconomySystem
+from symbolic_visualization_v3 import SymbolicVisualizer
 
 def run_simulation(rounds=100):
     world = World()
@@ -10,6 +11,7 @@ def run_simulation(rounds=100):
     viz = Visualization(world)
     beliefs = BeliefSystem()
     economy = EconomySystem()
+    symbolic = SymbolicVisualizer(world, beliefs)
 
     # เพิ่ม AI 5 ตัวพร้อม Core Traits
     entities = [
@@ -37,12 +39,8 @@ def run_simulation(rounds=100):
             print(f"  Knowledge: {e['knowledge']}")
             print(f"  Memory: {e['memory']}")
             print(f"  Last Message: {e['last_message']}")
-
-            # ความเชื่อ
             belief = beliefs.form_belief(e, summary['weather'])
             print(f"  Belief: {belief}")
-
-            # เศรษฐกิจ
             resources = economy.get_resources(e)
             print(f"  Resources: {resources}")
 
@@ -57,6 +55,9 @@ def run_simulation(rounds=100):
 
         if summary['time'] % 10 == 0:
             viz.plot_map()
+
+        if summary['time'] % 20 == 0:
+            symbolic.plot_belief_map()
 
 if __name__ == "__main__":
     run_simulation()
