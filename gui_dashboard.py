@@ -1,4 +1,3 @@
-
 import tkinter as tk
 from tkinter import ttk, scrolledtext
 import matplotlib.pyplot as plt

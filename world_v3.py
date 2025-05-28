@@ -17,13 +17,18 @@ class World:
     def step(self):
         self.time.tick()
         self.physics.update_weather()
-        for entity in self.entities:
-            entity.observe(self.physics.weather)
-            self.physics.tick(entity)
-            entity.act()
-            entity.communicate(f"State at T={self.time.get_time()}")
+        alive_entities = []
 
-        # ทุก 10 รอบให้ลองสืบพันธุ์
+        for entity in self.entities:
+            if entity.is_alive():
+                entity.observe(self.physics.weather)
+                self.physics.tick(entity)
+                entity.act()
+                entity.communicate(f"State at T={self.time.get_time()}")
+                alive_entities.append(entity)
+
+        self.entities = alive_entities
+
         if self.time.get_time() % 10 == 0:
             new_entities = self.evolution.evolve(self.entities)
             self.entities.extend(new_entities)

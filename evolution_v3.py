@@ -1,30 +1,35 @@
 import random
+from entities_v3 import AIEntity
 
 class EvolutionEngine:
     def __init__(self):
-        self.generations = []
-        self.generation_count = 0
+        self.births = 0
+        self.deaths = 0
 
-    def evolve(self, population):
-        new_generation = []
-        for parent in population:
-            if parent.energy > 50:  # เงื่อนไขสืบพันธุ์เบื้องต้น
-                child = self.mutate(parent)
-                new_generation.append(child)
-        if new_generation:
-            self.generations.append(new_generation)
-            self.generation_count += 1
-        return new_generation
+    def evolve(self, entities):
+        new_entities = []
+        survivors = [e for e in entities if e.is_alive()]
 
-    def mutate(self, parent):
-        trait = parent.core_trait
-        name = f"{trait}_Child_{random.randint(1000, 9999)}"
-        child = parent.__class__(name, trait)
-        child.knowledge = parent.knowledge[:random.randint(1, len(parent.knowledge))] if parent.knowledge else []
-        return child
+        for parent in survivors:
+            if parent.energy > 50:
+                if random.random() < 0.3:  # อัตราสืบพันธุ์ 30%
+                    child = AIEntity(
+                        name=None,
+                        core_trait=parent.core_trait,
+                        generation=parent.generation + 1
+                    )
+                    if random.random() < 0.3:  # 30% กลายพันธุ์
+                        child.adjust_trait()
+
+                    parent.children.append(child.name)
+                    new_entities.append(child)
+                    self.births += 1
+
+        self.deaths += len(entities) - len(survivors)
+        return new_entities
 
     def get_stats(self):
         return {
-            "generation_count": self.generation_count,
-            "population_history": [len(gen) for gen in self.generations]
+            "births": self.births,
+            "deaths": self.deaths
         }

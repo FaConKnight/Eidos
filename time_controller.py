@@ -1,15 +1,12 @@
 class TimeController:
     def __init__(self):
-        self.time = 0
+        self.current_time = 0
+        self.time_scale = 1  # 1 = real speed, 10 = 10x speed, etc.
         self.paused = False
-        self.speed_multiplier = 1
 
     def tick(self):
         if not self.paused:
-            self.time += 1 * self.speed_multiplier
-
-    def set_speed(self, multiplier):
-        self.speed_multiplier = multiplier
+            self.current_time += self.time_scale
 
     def pause(self):
         self.paused = True
@@ -17,5 +14,8 @@ class TimeController:
     def resume(self):
         self.paused = False
 
+    def set_speed(self, multiplier):
+        self.time_scale = multiplier
+
     def get_time(self):
-        return self.time
+        return self.current_time

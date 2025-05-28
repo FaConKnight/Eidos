@@ -1,36 +1,31 @@
 import random
-import math
 
 class PhysicsEngine:
-    def __init__(self, gravity=9.81, energy_loss_rate=0.01, friction=0.05):
-        self.gravity = gravity
-        self.energy_loss_rate = energy_loss_rate
-        self.friction = friction
-        self.weather = {
-            "temperature": 25.0,
-            "type": "clear"
+    def __init__(self):
+        self.weather = self.generate_weather()
+        self.gravity = 9.8  # m/s^2
+        self.resistance = 0.1  # air resistance coefficient
+        self.decay_rate = 0.01  # entropy-like decay per tick
+
+    def generate_weather(self):
+        return {
+            "type": random.choice(["sunny", "cloudy", "rainy", "stormy", "windy"]),
+            "temperature": round(random.uniform(-10, 40), 1),
+            "humidity": round(random.uniform(0.2, 1.0), 2)
         }
 
-    def apply_gravity(self, entity):
-        # แรงโน้มถ่วงดึงพลังงานลงในแต่ละรอบ
-        entity.energy -= self.gravity * 0.01
-
-    def apply_friction(self, entity):
-        entity.energy -= self.friction * 0.01
-
-    def apply_energy_decay(self, entity):
-        entity.energy -= entity.energy * self.energy_loss_rate
-
     def update_weather(self):
-        temp_change = random.uniform(-0.5, 0.5)
-        self.weather["temperature"] += temp_change
+        # Change weather with slight variation over time
+        self.weather = self.generate_weather()
 
-        # เปลี่ยนประเภทของสภาพอากาศแบบสุ่ม
-        weather_types = ["clear", "rain", "storm", "cloudy"]
-        self.weather["type"] = random.choices(
-            weather_types, weights=[0.6, 0.2, 0.1, 0.1])[0]
+    def apply_physics(self, entity):
+        # Apply decay over time
+        entity.energy -= self.decay_rate
+        if entity.energy < 0:
+            entity.energy = 0
+        # Apply temperature effect (sample logic)
+        if self.weather["temperature"] < 0:
+            entity.energy -= 0.01
 
     def tick(self, entity):
-        self.apply_gravity(entity)
-        self.apply_friction(entity)
-        self.apply_energy_decay(entity)
+        self.apply_physics(entity)
