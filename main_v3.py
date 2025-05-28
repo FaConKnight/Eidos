@@ -1,10 +1,12 @@
 from world_v3 import World
 from entities_v3 import AIEntity
 from god_layer_v3 import GodLayer
+from visualization_v3 import Visualization
 
 def run_simulation(rounds=100):
     world = World()
     god = GodLayer(world)
+    visual = Visualization(world)
 
     # เพิ่ม AI 5 ตัวพร้อม Core Traits
     world.add_entity(AIEntity("Seekra", "Seekra"))
@@ -38,6 +40,10 @@ def run_simulation(rounds=100):
 
         if summary['time'] == 50:
             god.save_state("milestone_50")
+
+        # แสดงแผนที่ทุก 10 รอบ
+        if summary['time'] % 10 == 0:
+            visual.plot_map()
 
 if __name__ == "__main__":
     run_simulation()
